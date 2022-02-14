@@ -54,6 +54,7 @@ namespace MyTetris
         }
         public bool FindMistake()
         {
+            //проверка выхода за пределы, понимаем можно ли определенную фигурку отрисовать на текущей позиции
             for (int i = 0; i < 4; i++)
                 if (shape[1, i] >= width || shape[0, i] >= height ||
                     shape[1, i] <= 0 || shape[0, i] <= 0 ||
@@ -61,6 +62,93 @@ namespace MyTetris
                     return true;
             return false;
         }
+
+        private void TickTimer_Tick(object sender, EventArgs e)
+        {
+            // проверка на переполнение стакана
+            if (field[8, 3] == 1)
+                Environment.Exit(0);
+            // двигаем фигуру
+            for (int i = 0; i < 4; i++)
+                shape[0, i]++;
+            // проверка на собранность полной горизонтали
+            for (int i = height - 2; i > 2; i--)
+            {
+                var cross = (from t in
+                   Enumerable.Range(0, field.GetLength(0)).Select(j => field[j, i]).ToArray()
+                             where t == 1
+                             select t).Count();
+                if (cross == width)
+                    for (int k = i; k > 1; k--)
+                        for (int l = 1; l < width - 1; l++)
+                            field[l, k] = field[l, k - 1];
+            }
+            // если фигурка уперлась в препятствие
+            if (FindMistake())
+            {
+                // возвращаем её выше
+                for (int i = 0; i < 4; i++)
+                    field[shape[1, i], --shape[0, i]]++;
+                // выбираем новую случайную фигуру
+                SetShape();
+            }
+            // нарисовать поле на полотне
+            FillField();
+        }
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                // движение фигурки влево
+                case Keys.A:
+                case Keys.Left:
+                    for (int i = 0; i < 4; i++)
+                        shape[1, i]--;
+                    if (FindMistake())
+                        for (int i = 0; i < 4; i++)
+                            shape[1, i]++;
+                    FillField();
+                    break;
+                // движение фигурки вправо
+                case Keys.D:
+                case Keys.Right:
+                    for (int i = 0; i < 4; i++)
+                        shape[1, i]++;
+                    if (FindMistake())
+                        for (int i = 0; i < 4; i++)
+                            shape[1, i]--;
+                    FillField();
+                    break;
+
+                case Keys.W:
+                case Keys.Up:
+                    var shapeT = new int[2, 4];
+                    Array.Copy(shape, shapeT, shape.Length);
+                    int maxx = 0, maxy = 0;
+                    for (int i = 0; i < 4; i++)
+                    {
+                        if (shape[0, i] > maxy)
+                            maxy = shape[0, i];
+                        if (shape[1, i] > maxx)
+                            maxx = shape[1, i];
+                    }
+                    for (int i = 0; i < 4; i++)
+                    {
+                        int temp = shape[0, i];
+                        shape[0, i] = maxy - (maxx - shape[1, i]) - 1;
+                        shape[1, i] = maxx - (3 - (maxy - temp)) + 1;
+                    }
+                    if (FindMistake())
+                        Array.Copy(shapeT, shape, shape.Length);
+                    FillField();
+                    break;
+                case Keys.S:
+                case Keys.Down:
+                    TickTimer.Interval = 1;
+                    break;
+            }
+        }
+
         public Form1()
             {
                 InitializeComponent();

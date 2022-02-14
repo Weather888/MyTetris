@@ -46,6 +46,7 @@
             // TickTimer
             // 
             this.TickTimer.Interval = 500;
+            this.TickTimer.Tick += new System.EventHandler(this.TickTimer_Tick);
             // 
             // Form1
             // 
