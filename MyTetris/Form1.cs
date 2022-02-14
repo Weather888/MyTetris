@@ -97,15 +97,15 @@ namespace MyTetris
         }
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.KeyCode)
+            switch (e.KeyCode)//событие - нажатие клавиши
             {
                 // движение фигурки влево
                 case Keys.A:
                 case Keys.Left:
                     for (int i = 0; i < 4; i++)
-                        shape[1, i]--;
-                    if (FindMistake())
-                        for (int i = 0; i < 4; i++)
+                        shape[1, i]--;//уменьшаем на единицу, сдвиая влево
+                    if (FindMistake())//если ошибка
+                        for (int i = 0; i < 4; i++)//откатываем обратно
                             shape[1, i]++;
                     FillField();
                     break;
@@ -122,23 +122,23 @@ namespace MyTetris
 
                 case Keys.W:
                 case Keys.Up:
-                    var shapeT = new int[2, 4];
-                    Array.Copy(shape, shapeT, shape.Length);
-                    int maxx = 0, maxy = 0;
+                    var shapeT = new int[2, 4];//формируем новое изображение
+                    Array.Copy(shape, shapeT, shape.Length);//копируем наше старое изображение в новое
+                    int maxx = 0, maxy = 0;//для поиска границ, куда вписывается наша фигурка
                     for (int i = 0; i < 4; i++)
                     {
-                        if (shape[0, i] > maxy)
+                        if (shape[0, i] > maxy)//максимальная правая точка фигуры
                             maxy = shape[0, i];
-                        if (shape[1, i] > maxx)
+                        if (shape[1, i] > maxx)//максимальная нижняя точка нашей фигуры
                             maxx = shape[1, i];
                     }
                     for (int i = 0; i < 4; i++)
                     {
-                        int temp = shape[0, i];
+                        int temp = shape[0, i];//поворот
                         shape[0, i] = maxy - (maxx - shape[1, i]) - 1;
                         shape[1, i] = maxx - (3 - (maxy - temp)) + 1;
                     }
-                    if (FindMistake())
+                    if (FindMistake())//если возникла ошибка, возвращаем старую фигурку на место
                         Array.Copy(shapeT, shape, shape.Length);
                     FillField();
                     break;
@@ -148,6 +148,7 @@ namespace MyTetris
                     break;
             }
         }
+
 
         public Form1()
             {

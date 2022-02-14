@@ -59,6 +59,7 @@
             this.Name = "Form1";
             this.Text = "Tetris";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             ((System.ComponentModel.ISupportInitialize)(this.FieldPictureBox)).EndInit();
             this.ResumeLayout(false);
 
