@@ -37,7 +37,7 @@ namespace MyTetris
         }
         public void FillField()
         {
-            gr.Clear(Color.Black); //Очистим поле, полностью зарисовав его черным цветом
+            gr.Clear(Color.Gray); //Очистим поле, полностью зарисовав его серым цветом
             for (int i = 0; i < width; i++)
                 for (int j = 0; j < height; j++)
                     if (field[i, j] == 1)
@@ -67,7 +67,7 @@ namespace MyTetris
         {
             // проверка на переполнение стакана
             if (field[8, 3] == 1)
-                Environment.Exit(0);
+                Environment.Exit(0);//выходим
             // двигаем фигуру
             for (int i = 0; i < 4; i++)
                 shape[0, i]++;
@@ -75,7 +75,7 @@ namespace MyTetris
             for (int i = height - 2; i > 2; i--)
             {
                 var cross = (from t in
-                   Enumerable.Range(0, field.GetLength(0)).Select(j => field[j, i]).ToArray()
+                   Enumerable.Range(0, field.GetLength(0)).Select(j => field[j, i]).ToArray()//лямдо выражение
                              where t == 1
                              select t).Count();
                 if (cross == width)
@@ -171,7 +171,7 @@ namespace MyTetris
             }
             // задать случайную фигуру
             SetShape();
-            FillField();
+    
             TickTimer.Start();
         }
         }
